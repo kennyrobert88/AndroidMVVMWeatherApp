@@ -10,9 +10,9 @@ import io.reactivex.disposables.CompositeDisposable
 class WeatherRepository (private val apiService : WeatherAPIService) {
     lateinit var weatherDataSource: WeatherDataSource
 
-    fun fetchWeather(compositeDisposable: CompositeDisposable, location: String) : LiveData<CurrentWeather>{
+    fun fetchWeather(compositeDisposable: CompositeDisposable, latitude: Double, longitude: Double) : LiveData<CurrentWeather>{
         weatherDataSource = WeatherDataSource(apiService, compositeDisposable)
-        weatherDataSource.fetchCurrentWeather(location)
+        weatherDataSource.fetchCurrentWeather(latitude, longitude)
 
         return weatherDataSource.downloadedCurrentResponse
     }

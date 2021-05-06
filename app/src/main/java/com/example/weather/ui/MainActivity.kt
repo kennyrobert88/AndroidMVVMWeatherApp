@@ -32,19 +32,13 @@ class MainActivity : AppCompatActivity() {
     private lateinit var weatherRepository: WeatherRepository
 
     lateinit var fusedLocationProviderClient: FusedLocationProviderClient
-    lateinit var locationRequest: LocationRequest
     val Permission_if = 100
-    var CITY: String = "Jakarta"
     var locationLongitute: Double = 0.0
     var locationLatitute: Double = 0.0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-       /* fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
-        getLastLocation()
-        */
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
         getLastLocation()
@@ -69,11 +63,11 @@ class MainActivity : AppCompatActivity() {
         mainContainer.visibility = View.VISIBLE
     }
 
-    private fun getViewModel(location: String): MainViewViewModel {
+    private fun getViewModel(latitude: Double, longitude: Double): MainViewViewModel {
         return ViewModelProviders.of(this, object : ViewModelProvider.Factory {
             override fun <T : ViewModel?> create(modelClass: Class<T>): T {
                 @Suppress("UNCHECKED_CAST")
-                return MainViewViewModel(weatherRepository,location) as T
+                return MainViewViewModel(weatherRepository,latitude, longitude) as T
             }
         })[MainViewViewModel::class.java]
     }
@@ -89,14 +83,16 @@ class MainActivity : AppCompatActivity() {
                     } else {
                         locationLatitute = location.latitude
                         locationLongitute = location.longitude
-                        CITY = getCityName(locationLatitute, locationLongitute)
-                        Log.d("Location", CITY)
+                        Log.d("LocLat", locationLatitute.toString())
+                        Log.d("LocLong", locationLongitute.toString())
+                        //CITY = getCityName(locationLatitute, locationLongitute)
+                        //Log.d("Location123", CITY)
 
 
                         val apiService: WeatherAPIService = WeatherAppAPIClient.invoke()
                         weatherRepository = WeatherRepository(apiService)
 
-                        viewModel = getViewModel(CITY)
+                        viewModel = getViewModel(locationLatitute, locationLongitute)
                         viewModel.weather.observe(this, {
                             bind(it)
                         })
@@ -132,17 +128,6 @@ class MainActivity : AppCompatActivity() {
             var lastLocation: Location = locationResult.lastLocation
 
         }
-    }
-
-    private fun getCityName(lat: Double, long: Double): String{
-        var cityName: String?
-        var countryName: String?
-        var geoCoder = Geocoder(this, Locale.getDefault())
-        var Adress = geoCoder.getFromLocation(lat, long, 3)
-
-        cityName = Adress.get(0).locality
-        countryName = Adress.get(0).countryName
-        return cityName
     }
 
     // Checking permission for location

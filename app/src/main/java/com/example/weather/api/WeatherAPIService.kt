@@ -15,7 +15,8 @@ const val URL = "https://api.openweathermap.org/data/2.5/"
 interface WeatherAPIService {
     @GET("weather")
     fun getCurrentWeather(
-            @Query("q") location: String
+        @Query("lat") latitute: Double,
+        @Query("lon") longitute: Double
     ): Single<CurrentWeather>
 }
 

@@ -6,11 +6,11 @@ import com.example.weather.repository.NetworkState
 import com.example.weather.vo.CurrentWeather
 import io.reactivex.disposables.CompositeDisposable
 
-class MainViewViewModel(private val weatherRepository: WeatherRepository, location: String): ViewModel() {
+class MainViewViewModel(private val weatherRepository: WeatherRepository, latitude: Double, longitude: Double): ViewModel() {
     private val compositeDisposable = CompositeDisposable()
 
     val weather : LiveData<CurrentWeather> by lazy{
-        weatherRepository.fetchWeather(compositeDisposable, location)
+        weatherRepository.fetchWeather(compositeDisposable, latitude, longitude)
     }
 
     val networkState: LiveData<NetworkState> by lazy {
